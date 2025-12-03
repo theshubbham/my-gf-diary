@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Private Diary</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8e8ec;
+      margin: 0;
+      padding: 0;
+    }
+
+    .login, .diary-container {
+      max-width: 600px;
+      margin: 80px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      background: #ff6f9c;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background: #e05d89;
+    }
+
+    h2 {
+      text-align: center;
+      color: #ff3f7d;
+    }
+
+    .entry {
+      background: #fff4f7;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- LOGIN SCREEN -->
+  <div class="login" id="loginBox">
+    <h2>Welcome ❤️</h2>
+    <input type="password" id="passwordInput" placeholder="Enter password" />
+    <button onclick="login()">Enter</button>
+    <p style="text-align:center; color:#555;">(Ask CAP for the password 💕)</p>
+  </div>
+
+  <!-- DIARY SCREEN -->
+  <div class="diary-container" id="diary" style="display:none;">
+    <h2>Your Daily Diary 💖</h2>
+
+    <textarea id="diaryText" rows="6" placeholder="Write your day here..."></textarea>
+    <button onclick="saveEntry()">Save Entry</button>
+
+    <h3>Previous Entries</h3>
+    <div id="entries"></div>
+  </div>
+
+<script>
+  const PASSWORD = "shuhee"; // ← Change this!
+  
+  function login() {
+    let pw = document.getElementById("passwordInput").value;
+    if (pw === PASSWORD) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("diary").style.display = "block";
+      loadEntries();
+    } else {
+      alert("Incorrect password 😢");
+    }
+  }
+
+  function saveEntry() {
+    let text = document.getElementById("diaryText").value.trim();
+    if (text === "") return alert("Write something first ❤️");
+
+    let entries = JSON.parse(localStorage.getItem("diaryEntries") || "[]");
+
+    let today = new Date().toLocaleString();
+    entries.unshift({ date: today, text: text });
+
+    localStorage.setItem("diaryEntries", JSON.stringify(entries));
+    document.getElementById("diaryText").value = "";
+    loadEntries();
+  }
+
+  function loadEntries() {
+    let entries = JSON.parse(localStorage.getItem("diaryEntries") || "[]");
+    let container = document.getElementById("entries");
+    container.innerHTML = "";
+
+    entries.forEach(e => {
+      let div = document.createElement("div");
+      div.className = "entry";
+      div.innerHTML = `<b>${e.date}</b><br>${e.text}`;
+      container.appendChild(div);
+    });
+  }
+</script>
+</body>
+</html>
